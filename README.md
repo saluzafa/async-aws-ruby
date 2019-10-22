@@ -1,5 +1,7 @@
 # Async::Aws
 
+[![Gem Version](https://badge.fury.io/rb/async-aws.svg)](https://badge.fury.io/rb/async-aws)
+
 An experimental HTTP handler for AWS SDK Ruby powered by `socketry/async-http`.
 
 ## Installation
