@@ -10,7 +10,13 @@ module Async
         endpoint = ::Async::HTTP::Endpoint.parse(url)
         client = client_for(endpoint)
 
-        request_body = ::Async::HTTP::Body::Buffered.wrap(body)
+        request_body = \
+          case body
+          when ::Aws::Query::ParamList::IoWrapper
+            ::Async::HTTP::Body::Buffered.wrap(body.instance_variable_get(:@io))
+          else
+            ::Async::HTTP::Body::Buffered.wrap(body)
+          end
         request = ::Protocol::HTTP::Request.new(
           endpoint.scheme, endpoint.authority, method, endpoint.path, nil, headers,
           request_body

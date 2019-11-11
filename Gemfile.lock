@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     async-aws (0.1.0)
-      async-http (> 0.48)
+      async-http (~> 0.48)
 
 GEM
   remote: https://rubygems.org/
