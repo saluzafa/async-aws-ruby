@@ -22,7 +22,7 @@ module Async
       # @param protocol [Protocol::HTTP1 | Protocol::HTTP2 | Protocol::HTTPS] the protocol to use.
       # @param scheme [String] The default scheme to set to requests.
       # @param authority [String] The default authority to set to requests.
-      def initialize(endpoint, pool_size: 1, keep_alive_timeout: 5)
+      def initialize(endpoint, pool_size: 2, keep_alive_timeout: 5)
         @endpoint = endpoint
         @protocol = endpoint.protocol
         @scheme = endpoint.scheme
@@ -71,8 +71,9 @@ module Async
           end
 
           return response
-        ensure
+        rescue => e
           @pool << connection_spec if connection_spec
+          raise e
         end
       end
 
