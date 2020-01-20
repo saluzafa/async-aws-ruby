@@ -66,6 +66,7 @@ module Async
 
           # The connection won't be released until the body is completely read/released.
           ::Protocol::HTTP::Body::Streamable.wrap(response) do
+            connection_spec.used_at = current_time
             @pool << connection_spec
           end
 
