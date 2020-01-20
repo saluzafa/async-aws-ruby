@@ -1,9 +1,5 @@
 require 'async/aws/all'
 
-Async::Aws.connection_pool = Async::Aws::ConnectionPool.new(
-  connection_limit: 4
-)
-
 RSpec.describe Async::Aws do
   it "has a version number" do
     expect(Async::Aws::VERSION).not_to be nil
@@ -39,7 +35,7 @@ RSpec.describe Async::Aws do
         dynamo = Aws::DynamoDB::Client.new
         dynamo.get_item(
           table_name: 'test',
-          key: { key: 'test' }
+          key: { pk: 'test' }
         )
       end
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    async-aws (0.1.0)
+    async-aws (0.3.0)
       async-http (~> 0.48)
 
 GEM
@@ -11,14 +11,17 @@ GEM
       console (~> 1.0)
       nio4r (~> 2.3)
       timers (~> 4.1)
-    async-http (0.48.2)
-      async (~> 1.19)
-      async-io (~> 1.25)
-      protocol-http (~> 0.12.0)
-      protocol-http1 (~> 0.9.0)
-      protocol-http2 (~> 0.9.0)
-    async-io (1.27.0)
+    async-http (0.50.0)
+      async (~> 1.23)
+      async-io (~> 1.27.0)
+      async-pool (~> 0.2)
+      protocol-http (~> 0.13.0)
+      protocol-http1 (~> 0.10.0)
+      protocol-http2 (~> 0.10.0)
+    async-io (1.27.1)
       async (~> 1.14)
+    async-pool (0.2.0)
+      async (~> 1.8)
     aws-eventstream (1.0.3)
     aws-partitions (1.223.0)
     aws-sdk-core (3.68.1)
@@ -43,10 +46,10 @@ GEM
     jmespath (1.4.0)
     nio4r (2.5.2)
     protocol-hpack (1.4.1)
-    protocol-http (0.12.3)
-    protocol-http1 (0.9.0)
-      protocol-http (~> 0.5)
-    protocol-http2 (0.9.7)
+    protocol-http (0.13.0)
+    protocol-http1 (0.10.0)
+      protocol-http (~> 0.13)
+    protocol-http2 (0.10.4)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.2)
     rake (10.5.0)
@@ -78,4 +81,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   2.0.2
+   2.1.2

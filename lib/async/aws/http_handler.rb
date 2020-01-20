@@ -1,17 +1,27 @@
 module Async
   module Aws
     class HttpHandler < ::Seahorse::Client::Handler
+      def initialize(handler = nil)
+        super(handler)
+        @clients = {}
+      end
+
       def call(context)
         req = context.http_request
         resp = context.http_response
+        endpoint = Async::HTTP::Endpoint.parse(req.endpoint.to_s)
 
         begin
+          client = client_for(endpoint)
           headers_arr = req.headers.reject do |k, v|
             k == 'host' || k == 'content-length'
           end
-          response = Async::Aws.connection_pool.call(
-            req.http_method, req.endpoint.to_s, headers_arr, req.body
+          buffered_body = Async::HTTP::Body::Buffered.wrap(req.body)
+          request = ::Protocol::HTTP::Request.new(
+            client.scheme, endpoint.authority, req.http_method, endpoint.path,
+            nil, headers_arr, buffered_body
           )
+          response = client.call(request)
           body = response.read
           resp.signal_headers(response.status.to_i, response.headers.to_h)
           resp.signal_data(body)
@@ -22,6 +32,14 @@ module Async
         end
 
         Seahorse::Client::Response.new(context: context)
+      end
+
+      def client_for(endpoint)
+        @clients[endpoint.hostname] ||= ::Async::Aws::HttpClient.new(
+          endpoint,
+          pool_size: Async::Aws.connection_pool_size,
+          keep_alive_timeout: Async::Aws.keep_alive_timeout
+        )
       end
     end
   end
