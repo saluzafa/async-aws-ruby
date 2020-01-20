@@ -1,9 +1,35 @@
 module Async
   module Aws
     class HttpHandler < ::Seahorse::Client::Handler
-      def initialize(handler = nil)
-        super(handler)
-        @clients = {}
+      def self.clients
+        @clients ||= {}
+      end
+
+      def self.with_configuration(**kwargs)
+        Class.new(self).tap do |klass|
+          klass.connection_pool_size = kwargs.fetch(
+            :connection_pool_size, Async::Aws.connection_pool_size
+          )
+          klass.keep_alive_timeout = kwargs.fetch(
+            :keep_alive_timeout, Async::Aws.keep_alive_timeout
+          )
+        end
+      end
+
+      def self.connection_pool_size
+        @connection_pool_size ||= Async::Aws.connection_pool_size
+      end
+
+      def self.connection_pool_size=(value)
+        @connection_pool_size = value.to_i
+      end
+
+      def self.keep_alive_timeout
+        @keep_alive_timeout ||= Async::Aws.keep_alive_timeout
+      end
+
+      def self.keep_alive_timeout=(value)
+        @keep_alive_timeout = value.to_i
       end
 
       def call(context)
@@ -35,10 +61,10 @@ module Async
       end
 
       def client_for(endpoint)
-        @clients[endpoint.hostname] ||= ::Async::Aws::HttpClient.new(
+        self.class.clients[endpoint.hostname] ||= ::Async::Aws::HttpClient.new(
           endpoint,
-          pool_size: Async::Aws.connection_pool_size,
-          keep_alive_timeout: Async::Aws.keep_alive_timeout
+          pool_size: self.class.connection_pool_size,
+          keep_alive_timeout: self.class.keep_alive_timeout
         )
       end
     end

@@ -37,6 +37,10 @@ RSpec.describe Async::Aws do
           table_name: 'test',
           key: { pk: 'test' }
         )
+        dynamo.get_item(
+          table_name: 'test',
+          key: { pk: 'test' }
+        )
       end
 
       task.wait
