@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'async-http', '~> 0.51'
 
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "aws-sdk-s3"
   spec.add_development_dependency "aws-sdk-dynamodb"
