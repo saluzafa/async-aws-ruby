@@ -1,6 +1,4 @@
 require 'async/http'
-require 'async/http/internet'
-require 'async/aws/http_client'
 require 'async/aws/http_handler'
 require 'async/aws/http_plugin'
 
@@ -8,24 +6,24 @@ module Async
   module Aws
     module_function
 
-    def keep_alive_timeout=(arg)
-      @keep_alive_timeout = arg.to_i
+    def config
+      @config ||= {}
     end
 
-    def keep_alive_timeout
-      @keep_alive_timeout || 2
+    def configure(hash)
+      config.merge!(hash.slice(:connection_limit))
     end
 
-    def connection_pool_size=(arg)
-      @connection_pool_size = arg.to_i
+    def set(key, value)
+      __send__("#{key}=".to_sym, value)
     end
 
-    def connection_pool_size
-      @connection_pool_size || 1
+    def connection_limit=(arg)
+      config[:connection_limit] = arg.to_i
     end
 
-    def configure(&block)
-      instance_exec(&block)
+    def connection_limit
+      config.fetch(:connection_limit, 1)
     end
   end
 end

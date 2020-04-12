@@ -5,47 +5,38 @@ module Async
         @clients ||= {}
       end
 
-      def self.with_configuration(**kwargs)
-        Class.new(self).tap do |klass|
-          klass.connection_pool_size = kwargs.fetch(
-            :connection_pool_size, Async::Aws.connection_pool_size
-          )
-          klass.keep_alive_timeout = kwargs.fetch(
-            :keep_alive_timeout, Async::Aws.keep_alive_timeout
-          )
-        end
+      def self.endpoints
+        @endpoints ||= {}
       end
 
-      def self.connection_pool_size
-        @connection_pool_size ||= Async::Aws.connection_pool_size
+      def self.endpoint_for(url)
+        endpoints[url.to_s] ||= Async::HTTP::Endpoint.parse(url.to_s)
       end
 
-      def self.connection_pool_size=(value)
-        @connection_pool_size = value.to_i
-      end
-
-      def self.keep_alive_timeout
-        @keep_alive_timeout ||= Async::Aws.keep_alive_timeout
-      end
-
-      def self.keep_alive_timeout=(value)
-        @keep_alive_timeout = value.to_i
+      def self.client_for(endpoint)
+        clients[endpoint.hostname] ||= ::Async::HTTP::Client.new(
+          endpoint,
+          retries: 0,
+          connection_limit: Async::Aws.connection_limit
+        )
       end
 
       def call(context)
         req = context.http_request
         resp = context.http_response
-        endpoint = Async::HTTP::Endpoint.parse(req.endpoint.to_s)
+        endpoint = self.class.endpoint_for(req.endpoint)
 
         begin
-          client = client_for(endpoint)
-          headers_arr = req.headers.reject do |k, v|
-            k == 'host' || k == 'content-length'
-          end
+          client = self.class.client_for(endpoint)
+          headers = ::Protocol::HTTP::Headers.new(
+            req.headers.reject do |k, v|
+              k == 'host' || k == 'content-length'
+            end
+          )
           buffered_body = Async::HTTP::Body::Buffered.wrap(req.body)
           request = ::Protocol::HTTP::Request.new(
             client.scheme, endpoint.authority, req.http_method, endpoint.path,
-            nil, headers_arr, buffered_body
+            nil, headers, buffered_body
           )
           response = client.call(request)
           body = response.read
@@ -58,14 +49,6 @@ module Async
         end
 
         Seahorse::Client::Response.new(context: context)
-      end
-
-      def client_for(endpoint)
-        self.class.clients[endpoint.hostname] ||= ::Async::Aws::HttpClient.new(
-          endpoint,
-          pool_size: self.class.connection_pool_size,
-          keep_alive_timeout: self.class.keep_alive_timeout
-        )
       end
     end
   end

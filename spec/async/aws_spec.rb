@@ -1,5 +1,7 @@
 require 'async/aws/all'
 
+Async::Aws.configure(connection_limit: 4)
+
 RSpec.describe Async::Aws do
   it "has a version number" do
     expect(Async::Aws::VERSION).not_to be nil
@@ -34,11 +36,11 @@ RSpec.describe Async::Aws do
       task = Async do
         dynamo = Aws::DynamoDB::Client.new
         dynamo.get_item(
-          table_name: 'test',
+          table_name: 'async-aws-rspec',
           key: { pk: 'test' }
         )
         dynamo.get_item(
-          table_name: 'test',
+          table_name: 'async-aws-rspec',
           key: { pk: 'test' }
         )
       end

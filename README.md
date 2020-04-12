@@ -20,6 +20,13 @@ Or install it yourself as:
 
     $ gem install async-aws
 
+## Configuration
+```ruby
+Async::Aws.configure(
+  connection_limit: 4 # Max number of connections per endpoint (passed to Async::HTTP::Client)
+)
+```
+
 ## Usage
 
 ### Method 1
