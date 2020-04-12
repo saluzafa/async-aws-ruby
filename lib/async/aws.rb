@@ -10,8 +10,8 @@ module Async
       @config ||= {}
     end
 
-    def configure(hash)
-      config.merge!(hash.slice(:connection_limit))
+    def configure(**kwargs)
+      config.merge!(kwargs.slice(:connection_limit))
     end
 
     def set(key, value)
