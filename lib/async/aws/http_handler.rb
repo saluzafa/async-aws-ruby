@@ -33,7 +33,7 @@ module Async
               k == 'host' || k == 'content-length'
             end
           )
-          buffered_body = Async::HTTP::Body::Buffered.wrap(req.body)
+          buffered_body = Async::HTTP::Body::Buffered.wrap(req.body.read)
           request = ::Protocol::HTTP::Request.new(
             client.scheme, endpoint.authority, req.http_method, endpoint.path,
             nil, headers, buffered_body

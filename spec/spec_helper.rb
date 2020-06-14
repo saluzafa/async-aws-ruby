@@ -1,6 +1,7 @@
 require "bundler/setup"
 require 'aws-sdk-s3'
 require 'aws-sdk-dynamodb'
+require 'aws-sdk-sqs'
 require 'async'
 require 'async/clock'
 require 'async/http'

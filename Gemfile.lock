@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    async-aws (1.0.1)
+    async-aws (1.0.2)
       async-http (~> 0.51)
 
 GEM
@@ -38,6 +38,9 @@ GEM
     aws-sdk-s3 (1.61.2)
       aws-sdk-core (~> 3, >= 3.83.0)
       aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.24.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.1.1)
       aws-eventstream (~> 1.0, >= 1.0.2)
@@ -76,6 +79,7 @@ DEPENDENCIES
   async-aws!
   aws-sdk-dynamodb
   aws-sdk-s3
+  aws-sdk-sqs
   bundler (~> 2.0)
   rake (~> 13.0)
   rspec (~> 3.0)
